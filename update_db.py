@@ -8,6 +8,8 @@ data = json.load(f)
 f.close()
 
 # Update all stock date
-for key, value in data['stock'].items():
-    print("Updating " + key + ":" + value)
-    stock.update_stock_to_db(key, 'db/stock.db')
+for key, value in data['us_stock'].items():
+    # class
+    for sub_key, sub_value in data['us_stock'][key].items():
+        print("Updating " + sub_key + ':' + sub_value)
+        # stock.update_stock_to_db(sub_key, 'db/stock.db')

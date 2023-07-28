@@ -1,6 +1,14 @@
 {
-  "stock": {
-    "JPM": "JP Morgan",
-    "BAC": "Bank of America"
+  "us_stock": {
+    "bank": {
+      "JPM": "JP Morgan",
+      "BAC": "Bank of America"
+    },
+    "tech": {
+      "AAPL": "Apple"
+    },
+    "energy": {
+      "XOM": "EXXON MOBIL CORPORATION"
+    }
   }
 }

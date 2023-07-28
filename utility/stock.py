@@ -1,3 +1,4 @@
+"""Module to read stock data"""
 import yfinance as yf
 import sqlite3
 import pandas as pd
@@ -25,7 +26,7 @@ def update_stock_to_db(ticker, path_to_db):
     else:
         print('New table created: ' + ticker)
 
-    if (start_date >= (datetime.datetime.today()-datetime.timedelta(days=1))):
+    if start_date >= (datetime.datetime.today()-datetime.timedelta(days=1)):
         print("Data is up to date")
     else:
         print("Get data after " + start_date.strftime("%Y-%m-%d"))
