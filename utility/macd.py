@@ -2,10 +2,6 @@ import pandas as pd
 
 
 def calculate_macd(data, fast=12, slow=26, ma=9):
-    fast = 12
-    slow = 26
-    ma = 9
-
     macd = pd.DataFrame()
     macd['close'] = data['Close']
     macd = macd.reset_index()
