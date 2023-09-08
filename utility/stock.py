@@ -12,7 +12,8 @@ def update_stock_to_db(ticker, path_to_db):
 
     # check if table exists
     cur.execute(
-        "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + ticker + "'")
+        "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" +
+        ticker + "'")
 
     start_date = datetime.datetime(2005, 1, 1)
 
@@ -26,7 +27,7 @@ def update_stock_to_db(ticker, path_to_db):
     else:
         print('New table created: ' + ticker)
 
-    if start_date >= (datetime.datetime.today()-datetime.timedelta(days=1)):
+    if start_date >= (datetime.datetime.today() - datetime.timedelta(days=1)):
         print("Data is up to date")
     else:
         print("Get data after " + start_date.strftime("%Y-%m-%d"))
@@ -37,8 +38,9 @@ def update_stock_to_db(ticker, path_to_db):
 
         data = data.rename(str.lower, axis='columns')
         data = data.rename(columns={"adj close": "adj_close"})
-        data = data[['date', 'open', 'high',
-                    'low', 'close', "adj_close", "volume"]]
+        data = data[[
+            'date', 'open', 'high', 'low', 'close', "adj_close", "volume"
+        ]]
 
         data.to_sql(name=ticker, con=con, if_exists="append", index=False)
 
@@ -47,5 +49,18 @@ def update_stock_to_db(ticker, path_to_db):
     con.close()
 
 
+def get_stock_history(ticker, period):
+    if ticker.isnumeric():
+        if ticker[0] == '6':
+            ticker += '.ss'
+        elif ticker[0] == '0':
+            ticker += '.sz'
+
+    data = yf.download(ticker, period=period)
+    return data
+
+
 if __name__ == "__main__":
-    update_stock_to_db('JPM', 'db/stock.db')
+    # update_stock_to_db('JPM', 'db/stock.db')
+    data = get_stock_history('600036', '1y')
+    print(data)

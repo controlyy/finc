@@ -17,6 +17,7 @@ stock_data['Gross profit margin'] = pd.NA
 stock_data['Profit margin'] = pd.NA
 
 for i in range(len(stock_data)):
+    print("Updating " + str(i))
     info = ef.stock.get_base_info(str(stock_data.loc[i, "Code"]))
     if info["股票代码"] != stock_data.loc[i, 'Code']:
         print("Error: code does not match. Original: " +
@@ -28,6 +29,7 @@ for i in range(len(stock_data)):
     stock_data.loc[i, 'Market Cap'] = info["总市值"]
     stock_data.loc[i, 'Gross profit margin'] = info["毛利率"]
     stock_data.loc[i, 'Profit margin'] = info["净利率"]
+    
 
 print(stock_data)
 stock_data.to_excel('output.xlsx', sheet_name='s1', index=False)
