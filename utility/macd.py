@@ -62,9 +62,22 @@ def get_death_cross_date(data):
 
 
 def days_to_golden_cross(data):
-    macd = calculate_macd()
+    macd = calculate_macd(data)
 
-    if macd.iloc[-1, 'histogram'] > 0:
+    if macd.iloc[-1]['histogram'] > 0:
         # already pass the golder cross
-        return
-    return
+        days = 0
+        for i in range(1, len(macd)):
+            if macd.iloc[-i]['histogram'] < 0:
+                break
+            else:
+                days -= 1
+        return days
+
+    rate = macd.iloc[-1]['histogram'] - macd.iloc[-2]['histogram']
+
+    if rate < 0:
+        return pd.NA
+
+    days = -macd.iloc[-1]['histogram'] / rate
+    return days

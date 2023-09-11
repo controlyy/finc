@@ -55,6 +55,8 @@ def get_stock_history(ticker, period):
             ticker += '.ss'
         elif ticker[0] == '0':
             ticker += '.sz'
+        elif ticker[0] == '3':
+            ticker += '.sz'
 
     data = yf.download(ticker, period=period)
     data = data.reset_index()

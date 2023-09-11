@@ -35,3 +35,8 @@ def calculate_rsi(data, period=14):
     rsi = rsi.dropna()
 
     return rsi
+
+
+def get_current_rsi(data):
+    rsi = calculate_rsi(data)
+    return rsi.iloc[-1]['rsi']
