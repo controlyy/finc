@@ -3,9 +3,8 @@ import pandas as pd
 
 def calculate_rsi(data, period=14):
     rsi = pd.DataFrame()
-    rsi['close'] = data['Close']
+    rsi['close'] = data['close']
     rsi = rsi.reset_index()
-    rsi = rsi.rename(columns={"Date": "date"})
 
     if len(rsi.index) <= period:
         print("Error: Data size too small")

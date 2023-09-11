@@ -57,6 +57,16 @@ def get_stock_history(ticker, period):
             ticker += '.sz'
 
     data = yf.download(ticker, period=period)
+    data = data.reset_index()
+    data = data.rename(
+        columns={
+            "Date": "date",
+            "Close": "close",
+            "Open": "open",
+            "High": "high",
+            "Low": "low"
+        })
+    data = data.set_index('date')
     return data
 
 
