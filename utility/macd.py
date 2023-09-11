@@ -81,3 +81,8 @@ def days_to_golden_cross(data):
 
     days = -macd.iloc[-1]['histogram'] / rate
     return days
+
+
+def get_latest_macd(data):
+    macd = calculate_macd(data)
+    return macd.iloc[-1]['macd']
