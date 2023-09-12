@@ -44,5 +44,18 @@ def update_stock_to_db(ticker, path_to_db):
     con.close()
 
 
+def get_stock_1y_history(ticker):
+    start_date = datetime.datetime.today()-datetime.timedelta(days=380)
+    data = ef.stock.get_quote_history(ticker, beg=start_date.strftime("%Y%m%d"),)
+
+    data = data.rename(columns={"日期": "date", "开盘": "open",
+                        "收盘": "close", "最高": "high", "最低": "low", "成交量": "volume"})
+
+    data = data[['date', 'open', 'high', 'low', 'close', "volume"]]
+    data = data.set_index('date')
+
+    return data
+
+
 if __name__ == "__main__":
     update_stock_to_db('JPM', 'db/stock.db')

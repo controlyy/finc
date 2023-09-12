@@ -49,7 +49,7 @@ def update_stock_to_db(ticker, path_to_db):
     con.close()
 
 
-def get_stock_history(ticker, period):
+def convert_stock_number(ticker):
     if ticker.isnumeric():
         if ticker[0] == '6':
             ticker += '.ss'
@@ -57,6 +57,12 @@ def get_stock_history(ticker, period):
             ticker += '.sz'
         elif ticker[0] == '3':
             ticker += '.sz'
+
+    return ticker
+
+
+def get_stock_history(ticker, period):
+    ticker = convert_stock_number(ticker)
 
     data = yf.download(ticker, period=period)
     data = data.reset_index()
@@ -70,6 +76,35 @@ def get_stock_history(ticker, period):
         })
     data = data.set_index('date')
     return data
+
+
+def get_latest_price(ticker):
+    df = yf.Ticker(ticker).history(interval="1m", period="1m")
+    return df.iloc[-1]['Close']
+
+
+def get_1week_price_change(ticker):
+    ticker = convert_stock_number(ticker)
+    df = yf.Ticker(ticker).history(period='1wk')
+    start_price = df['Close'][0]
+    end_price = df['Close'][-1]
+    return (end_price - start_price) / start_price
+
+
+def get_1month_price_change(ticker):
+    ticker = convert_stock_number(ticker)
+    df = yf.Ticker(ticker).history(interval='1wk', period='1mo')
+    start_price = df['Close'][0]
+    end_price = df['Close'][-1]
+    return (end_price - start_price) / start_price
+
+
+def get_1year_price_change(ticker):
+    ticker = convert_stock_number(ticker)
+    df = yf.Ticker(ticker).history(interval='1mo', period='1y')
+    start_price = df['Close'][0]
+    end_price = df['Close'][-1]
+    return (end_price - start_price) / start_price
 
 
 if __name__ == "__main__":
