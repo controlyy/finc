@@ -45,7 +45,7 @@ def update_stock_to_db(ticker, path_to_db):
 
 
 def get_stock_1y_history(ticker):
-    start_date = datetime.datetime.today()-datetime.timedelta(days=380)
+    start_date = datetime.datetime.today()-datetime.timedelta(days=381)
     data = ef.stock.get_quote_history(ticker, beg=start_date.strftime("%Y%m%d"),)
 
     data = data.rename(columns={"日期": "date", "开盘": "open",

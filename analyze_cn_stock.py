@@ -11,6 +11,7 @@ from datetime import datetime
 
 # read list
 stock_data = pd.read_excel('list/cn_stock_list.xlsx')
+stock_data = stock_data[['code', 'name', 'sector']]
 
 # add leading 0s
 stock_data['code'] = stock_data['code'].apply('{:0>6}'.format)
@@ -30,7 +31,7 @@ stock_data['gross profit margin'] = pd.NA
 stock_data['net profit margin'] = pd.NA
 
 for i in tqdm(range(len(stock_data))):
-#for i in tqdm(range(10)):
+    #for i in tqdm(range(5)):
     #print("Updating " + str(i))
     ticker = str(stock_data.loc[i, "code"])
     data = utility.stock_efinc.get_stock_1y_history(ticker)
@@ -39,28 +40,32 @@ for i in tqdm(range(len(stock_data))):
         print("Cannot get data of " + str(i))
         continue
 
-    stock_data.loc[i, 'macd'] = utility.macd.get_latest_macd(data)
-    stock_data.loc[i, 'gc_days'] = utility.macd.days_to_golden_cross(data)
-    stock_data.loc[i, 'rsi'] = utility.rsi.get_current_rsi(data)
+    stock_data.loc[i, 'macd'] = round(utility.macd.get_latest_macd(data), 2)
+
+    gc_days = utility.macd.days_to_golden_cross(data)
+    if gc_days is not pd.NA:
+        stock_data.loc[i, 'gc_days'] = round(gc_days, 2)
+
+    stock_data.loc[i, 'rsi'] = round(utility.rsi.get_current_rsi(data), 2)
 
     current_price = data['close'][-1]
     stock_data.loc[i, 'price'] = current_price
 
     yesterday_price = data['close'][-2]
-    stock_data.loc[i, '1day%'] = (current_price -
-                                  yesterday_price) / yesterday_price * 100
+    stock_data.loc[i, '1day%'] = round(
+        (current_price - yesterday_price) / yesterday_price * 100, 2)
 
     one_week_price = data['close'][-5]
-    stock_data.loc[i, '1week%'] = (current_price -
-                                   one_week_price) / one_week_price * 100
+    stock_data.loc[i, '1week%'] = round(
+        (current_price - one_week_price) / one_week_price * 100, 2)
 
     one_month_price = data['close'][-21]
-    stock_data.loc[i, '1month%'] = (current_price -
-                                    one_month_price) / one_month_price * 100
+    stock_data.loc[i, '1month%'] = round(
+        (current_price - one_month_price) / one_month_price * 100, 2)
 
     one_year_price = data['close'][-240]
-    stock_data.loc[i, '1year%'] = (current_price -
-                                   one_year_price) / one_year_price * 100
+    stock_data.loc[i, '1year%'] = round(
+        (current_price - one_year_price) / one_year_price * 100, 2)
 
     if (stock_data.loc[i, 'gc_days'] is not pd.NA
         ) and (0 <= stock_data.loc[i, 'gc_days'] <= 3) and (
@@ -72,8 +77,8 @@ for i in tqdm(range(len(stock_data))):
     stock_data.loc[i, 'pe ratio'] = base_info['市盈率(动)']
     stock_data.loc[i, 'pb ratio'] = base_info['市净率']
     stock_data.loc[i, 'roe'] = base_info['ROE']
-    stock_data.loc[i, 'gross profit margin'] = base_info['毛利率']
-    stock_data.loc[i, 'net profit margin'] = base_info['净利率']
+    stock_data.loc[i, 'gross profit margin'] = round(base_info['毛利率'], 2)
+    stock_data.loc[i, 'net profit margin'] = round(base_info['净利率'], 2)
 
 stock_data = stock_data.set_index('code')
 
