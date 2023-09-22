@@ -77,20 +77,26 @@ for i in tqdm(range(len(stock_data))):
     stock_data.loc[i, 'ma5_cross_ma60_days'] = dates_ma5_cross_ma60
 
     # check the signs
-    stock_sign = ''
+    if utility.ma.if_all_ma_decline(data):
+        stock_data.loc[i, 'sign'] = ''
+    else:
+        stock_sign = ''
 
-    if (dates_ma5_cross_ma60 is not pd.NA) and (-1 <= dates_ma5_cross_ma60 <=
-                                                3):
-        stock_sign += '*'
+        if (dates_ma5_cross_ma60 is not pd.NA) and (-1 <= dates_ma5_cross_ma60
+                                                    <= 3):
+            stock_sign += '*'
 
-    if (stock_data.loc[i, 'gc_days'] is
-            not pd.NA) and (-1 <= stock_data.loc[i, 'gc_days'] <= 3):
-        stock_sign += '*'
+        if (stock_data.loc[i, 'gc_days'] is
+                not pd.NA) and (-1 <= stock_data.loc[i, 'gc_days'] <= 3):
+            stock_sign += '*'
 
-    if (stock_data.loc[i, 'macd'] < 0) and (stock_data.loc[i, 'rsi'] < 40):
-        stock_sign += '*'
+        # ignore if only rsi
+        if (stock_sign != ''):
+            if (stock_data.loc[i, 'macd'] < 0) and (stock_data.loc[i, 'rsi'] <
+                                                    40):
+                stock_sign += '*'
 
-    stock_data.loc[i, 'sign'] = stock_sign
+        stock_data.loc[i, 'sign'] = stock_sign
 
     # check base info
     base_info = ef.stock.get_base_info(ticker)

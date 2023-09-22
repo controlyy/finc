@@ -27,3 +27,17 @@ def get_dates_ma5_cross_ma60(original_data):
     days = (data.iloc[-1]['ma_60'] - data.iloc[-1]['ma_5']) / (rate_ma5 -
                                                                rate_ma60)
     return days
+
+
+def if_all_ma_decline(data):
+    data['ma_30'] = data['close'].rolling(30).mean()
+    data['ma_60'] = data['close'].rolling(60).mean()
+    data['ma_120'] = data['close'].rolling(120).mean()
+
+    # if decline in last 10 days
+    if (data.iloc[-1]['ma_30'] < data.iloc[-10]['ma_30']) and (
+            data.iloc[-1]['ma_60'] < data.iloc[-10]['ma_60']) and (
+                data.iloc[-1]['ma_120'] < data.iloc[-10]['ma_120']):
+        return True
+
+    return False
