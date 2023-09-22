@@ -65,7 +65,7 @@ def days_to_golden_cross(data):
     macd = calculate_macd(data)
 
     if macd.iloc[-1]['histogram'] > 0:
-        # already pass the golder cross
+        # already pass the golden cross
         days = 0
         for i in range(1, len(macd)):
             if macd.iloc[-i]['histogram'] < 0:

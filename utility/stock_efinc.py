@@ -11,7 +11,8 @@ def update_stock_to_db(ticker, path_to_db):
 
     # check if table exists
     cur.execute(
-        "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + ticker + "'")
+        "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" +
+        ticker + "'")
 
     start_date = datetime.datetime(2005, 1, 1)
 
@@ -25,15 +26,24 @@ def update_stock_to_db(ticker, path_to_db):
     else:
         print('New table created: ' + ticker)
 
-    if start_date >= (datetime.datetime.today()-datetime.timedelta(days=1)):
+    if start_date >= (datetime.datetime.today() - datetime.timedelta(days=1)):
         print("Data is up to date")
     else:
         print("Get data after " + start_date.strftime("%Y-%m-%d"))
         data = ef.stock.get_quote_history(
-            ticker, beg=start_date.strftime("%Y%m%d"),)
+            ticker,
+            beg=start_date.strftime("%Y%m%d"),
+        )
 
-        data = data.rename(columns={"日期": "date", "开盘": "open",
-                           "收盘": "close", "最高": "high", "最低": "low", "成交量": "volume"})
+        data = data.rename(
+            columns={
+                "日期": "date",
+                "开盘": "open",
+                "收盘": "close",
+                "最高": "high",
+                "最低": "low",
+                "成交量": "volume"
+            })
 
         data = data[['date', 'open', 'high', 'low', 'close', "volume"]]
         # print(data)
@@ -45,14 +55,28 @@ def update_stock_to_db(ticker, path_to_db):
 
 
 def get_stock_1y_history(ticker):
-    start_date = datetime.datetime.today()-datetime.timedelta(days=381)
-    data = ef.stock.get_quote_history(ticker, beg=start_date.strftime("%Y%m%d"),)
+    data = pd.DataFrame()
+    try:
+        start_date = datetime.datetime.today() - datetime.timedelta(days=381)
+        data = ef.stock.get_quote_history(
+            ticker,
+            beg=start_date.strftime("%Y%m%d"),
+        )
 
-    data = data.rename(columns={"日期": "date", "开盘": "open",
-                        "收盘": "close", "最高": "high", "最低": "low", "成交量": "volume"})
+        data = data.rename(
+            columns={
+                "日期": "date",
+                "开盘": "open",
+                "收盘": "close",
+                "最高": "high",
+                "最低": "low",
+                "成交量": "volume"
+            })
 
-    data = data[['date', 'open', 'high', 'low', 'close', "volume"]]
-    data = data.set_index('date')
+        data = data[['date', 'open', 'high', 'low', 'close', "volume"]]
+        data = data.set_index('date')
+    except:
+        print("Warning: cannot get data of '" + ticker + "'")
 
     return data
 
